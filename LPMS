@@ -1,0 +1,111 @@
+import streamlit as st
+
+st.title("Login Portal Management System")
+
+logindatafile = {}
+
+try:
+    with open("logindatafile.txt", "r") as file:
+        for line in file:
+            website, pwd = line.strip().split(":")
+            logindatafile[website] = pwd
+except FileNotFoundError:
+    pass
+
+def save_to_file():
+    with open("logindatafile.txt", "w") as file:
+        for site, pwd in logindatafile.items():
+            file.write(f"{site}:{pwd}\n")
+
+option = st.sidebar.selectbox(
+    "Choose Option",
+    [
+        "Add Login",
+        "View Login",
+        "Search",
+        "Update Password",
+        "Delete"
+    ]
+)
+
+
+if option == "Add Login":
+
+    email = st.text_input("Enter Email")
+
+    password = st.text_input("Enter Password", type="password")
+
+    if st.button("Save"):
+
+        logindatafile[email] = password
+
+        save_to_file()
+
+        st.success("Saved Successfully")
+
+elif option == "View Login":
+
+    if logindatafile:
+
+        for email, password in logindatafile.items():
+            st.write(f"Email: {email}")
+            st.write(f"Password: {password}")
+            st.write("---")
+
+    else:
+
+        st.warning("No Data")
+        email, pwd = line.strip().split(":")
+        logindatafile[email] = pwd
+
+elif option == "Search":
+
+    email = st.text_input("Enter Email")
+
+    if st.button("Search"):
+
+        if email in logindatafile:
+
+            st.success(logindatafile[email])
+
+        else:
+
+            st.error("Not Found")  
+
+elif option == "Update Password":
+
+    email = st.text_input("Email")
+
+    new_password = st.text_input(
+        "New Password",
+        type="password"
+    )
+
+    if st.button("Update"):
+
+        logindatafile[email] = new_password
+
+        save_to_file()
+
+        st.success("Password Updated")
+
+elif option == "Delete":
+
+    email = st.text_input("Email")
+
+    if st.button("Delete"):
+
+        if email in logindatafile:
+
+            del logindatafile[email]
+
+            save_to_file()
+
+            st.success("Deleted")
+
+        else:
+
+            st.error("Not Found")
+
+
+
